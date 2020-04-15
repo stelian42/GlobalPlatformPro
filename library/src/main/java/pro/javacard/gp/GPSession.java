@@ -453,7 +453,7 @@ public class GPSession {
         }
 
         // Give the card key a chance to be automatically diverisifed based on KDD
-        GPCardKeys cardKeys = keys.diversify(this.scpVersion, diversification_data);
+        cardKeys = keys.diversify(this.scpVersion, diversification_data);
 
         logger.info("Diversified card keys: {}", cardKeys);
 
@@ -520,7 +520,6 @@ public class GPSession {
         GPException.check(response, "External authenticate failed");
         // After opening the session with MAC mode, set it to target level
         wrapper.setSecurityLevel(securityLevel);
-        cardKeys = keys;
     }
 
     // Pipe through secure channel
