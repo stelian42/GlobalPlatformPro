@@ -29,6 +29,7 @@ import apdu4j.HexUtils;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 public abstract class GPCardKeys {
 
@@ -59,14 +60,14 @@ public abstract class GPCardKeys {
         }
     }
 
-    // Encrypt data with static card DEK
-    public abstract byte[] encrypt(byte[] data) throws GeneralSecurityException;
+    // Encrypt data with card DEK
+    public abstract byte[] encrypt(byte[] data, byte[] sessionContext) throws GeneralSecurityException;
 
-    // Encrypt a key with card (or session) DEK
-    public abstract byte[] encryptKey(GPCardKeys key, KeyPurpose p) throws GeneralSecurityException;
+    // Encrypt a key with card DEK (session DEK in case of SCP02)
+    public abstract byte[] encryptKey(GPCardKeys key, KeyPurpose p, byte[] sessionContext) throws GeneralSecurityException;
 
     // Get session keys for given session data
-    public abstract GPSessionKeys getSessionKeys(byte[] kdd);
+    public abstract Map<KeyPurpose, byte[]> getSessionKeys(byte[] sessionContext);
 
     // Get KCV of a card key
     public abstract byte[] kcv(KeyPurpose p);

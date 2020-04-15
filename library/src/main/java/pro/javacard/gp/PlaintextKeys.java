@@ -201,7 +201,7 @@ public class PlaintextKeys extends GPCardKeys {
 
     @Override
     // data must be padded by caller
-    public byte[] encrypt(byte[] data) throws GeneralSecurityException {
+    public byte[] encrypt(byte[] data, byte[] sessionContext) throws GeneralSecurityException {
         if (scp == GPSecureChannel.SCP02) {
             return GPCrypto.dek_encrypt_des(sessionKeys.get(KeyPurpose.DEK), data);
         } else if (scp == GPSecureChannel.SCP01) {
@@ -212,7 +212,7 @@ public class PlaintextKeys extends GPCardKeys {
     }
 
     @Override
-    public byte[] encryptKey(GPCardKeys key, KeyPurpose p) throws GeneralSecurityException {
+    public byte[] encryptKey(GPCardKeys key, KeyPurpose p, byte[] sessionContext) throws GeneralSecurityException {
         if (!(key instanceof PlaintextKeys))
             throw new IllegalArgumentException(getClass().getName() + " can only handle " + getClass().getName());
         PlaintextKeys other = (PlaintextKeys) key;
@@ -239,7 +239,7 @@ public class PlaintextKeys extends GPCardKeys {
     }
 
     @Override
-    public GPSessionKeys getSessionKeys(byte[] kdd) {
+    public Map<KeyPurpose, byte[]> getSessionKeys(byte[] kdd) {
         // Calculate session keys (ENC-MAC-DEK[-RMAC])
         for (KeyPurpose p : KeyPurpose.cardKeys()) {
             switch (scp) {
@@ -263,7 +263,7 @@ public class PlaintextKeys extends GPCardKeys {
 
             }
         }
-        return new GPSessionKeys(this, sessionKeys.get(KeyPurpose.ENC), sessionKeys.get(KeyPurpose.MAC), sessionKeys.get(KeyPurpose.RMAC));
+        return sessionKeys;
     }
 
     @Override
